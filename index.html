@@ -1,0 +1,59 @@
+<head>
+	<meta charset = "utf-8"/>
+	<title>Gráfico</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+</head>
+
+<body>
+	<p id="data"> </p>
+	<div id='myDiv'></div>
+
+	<script type="text/javascript">
+		d_x = new Array();	
+		d_y =new Array ();
+		//Se hace la petición 
+		var request = new XMLHttpRequest();
+		request.onreadystatechange=function(){
+			if(this.readyState==4 && this.status ==200)
+			{
+				var datos=request.response;
+				for (var i=0; i<datos.length;i++)
+				{
+					//Se obtienen los datos userId y body del json obtenido
+					var id=document.getElementById("data").innerHtml=datos[i]["userId"]  
+					var body =document.getElementById("data").innerHtml=datos[i]["body"]  
+					var num_p=body.replace(/ /g,"");
+					//Se guarda los datos en una array para posteriormente usarlos 
+					d_x.push(id);
+					d_y.push(num_p.length);
+
+				}												
+			
+			}
+			//Grafica los puntos obtenidos donde x=userId y y=número de letras de body
+		var trace1=
+		{
+			x:d_x,
+			y:d_y,
+			mode: 'markers',
+			type:'scatter',
+			marker:{size:12}
+		};
+
+		var data = [trace1];
+		var layout = { 	
+		  title:'UserId vs número de letras de body'
+		};
+
+		Plotly.newPlot('myDiv', data, layout);
+		};
+		request.open('GET', 'https://jsonplaceholder.typicode.com/posts',true);
+		request.responseType = 'json';
+		request.send();
+		
+	</script>
+
+</body>
+
+</html>
